@@ -4,8 +4,9 @@ import { useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { PredictionForm, type PredictionFormData } from '@/components/prediction-form';
 import { PredictionResult } from '@/components/prediction-result';
-import { predictDiabetesProbability } from '@/ai/flows/predict-diabetes'; // Import the GenAI flow
-import type { PredictDiabetesOutput } from '@/ai/flows/predict-diabetes'; // Use the correct output type
+// No longer import the flow directly
+// import { predictDiabetesProbability } from '@/ai/flows/predict-diabetes';
+import type { PredictDiabetesOutput } from '@/ai/flows/predict-diabetes'; // Keep the output type
 import { useToast } from "@/hooks/use-toast";
 import { HeartPulse } from 'lucide-react';
 import { Separator } from '@/components/ui/separator'; // Import Separator
@@ -22,14 +23,23 @@ export default function PredictPage() {
     setPrediction(null); // Clear previous prediction
 
     try {
-      // Call the GenAI flow function
-      const result = await predictDiabetesProbability({
-        age: data.age,
-        bloodGroup: data.bloodGroup,
-        gender: data.gender,
-        weight: data.weight,
-        height: data.height,
+      // Call the API route using fetch
+      const response = await fetch('/api/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data), // Send form data as JSON
       });
+
+      if (!response.ok) {
+        // Handle API errors (e.g., validation errors, server errors)
+        const errorData = await response.json();
+        throw new Error(errorData.details || errorData.error || `API request failed with status ${response.status}`);
+      }
+
+      // Parse the successful prediction result
+      const result: PredictDiabetesOutput = await response.json();
       setPrediction(result);
       toast({
         title: "Prediction Successful",
