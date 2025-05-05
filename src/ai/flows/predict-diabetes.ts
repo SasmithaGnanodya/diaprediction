@@ -5,7 +5,6 @@
  * - predictDiabetesProbability - A function that handles the diabetes prediction process.
  * - PredictDiabetesInput - The input type for the predictDiabetesProbability function.
  * - PredictDiabetesOutput - The return type for the predictDiabetesProbability function.
- * - PredictDiabetesInputSchema - The Zod schema for input validation.
  */
 
 import { ai } from '@/ai/ai-instance';
@@ -13,19 +12,22 @@ import { z } from 'genkit';
 // Keep types from the service file, but the implementation logic is now primarily within the flow.
 import type { PatientData, DiabetesPrediction } from '@/services/diabetes-prediction';
 
-export const PredictDiabetesInputSchema = z.object({
+// Define the Zod schema internally, but don't export it directly from the 'use server' file
+const PredictDiabetesInputSchema = z.object({
   age: z.coerce.number().min(1, { message: "Age must be at least 1." }).max(120, { message: "Age seems unrealistic." }).int("Age must be a whole number.").describe("The patient's age in years."),
   bloodGroup: z.string().min(1, { message: "Blood group is required." }).describe("The patient's blood group (e.g., A+, O-)."),
   gender: z.string().describe("The patient's gender (Male, Female, or Other)."),
   weight: z.coerce.number().min(1, { message: "Weight must be positive." }).max(500, { message: "Weight seems unrealistic."}).describe("The patient's weight in kilograms."),
   height: z.coerce.number().min(50, { message: "Height must be at least 50cm." }).max(250, { message: "Height seems unrealistic."}).int("Height must be a whole number (cm).").describe("The patient's height in centimeters."),
 });
+// Export the type derived from the schema
 export type PredictDiabetesInput = z.infer<typeof PredictDiabetesInputSchema>;
 
 const PredictDiabetesOutputSchema = z.object({
   probability: z.number().min(0).max(1).describe('The probability of a positive diabetes diagnosis (0 to 1).'),
   confidence: z.enum(['High', 'Medium', 'Low']).describe('A confidence level indicator (High, Medium, Low).'),
 });
+// Export the type derived from the schema
 export type PredictDiabetesOutput = z.infer<typeof PredictDiabetesOutputSchema>;
 
 // This is the main function the UI will call (and now the API route)
@@ -39,10 +41,10 @@ export async function predictDiabetesProbability(
 const predictDiabetesPrompt = ai.definePrompt({
   name: 'predictDiabetesPrompt',
   input: {
-    schema: PredictDiabetesInputSchema,
+    schema: PredictDiabetesInputSchema, // Use the internal schema definition
   },
   output: {
-    schema: PredictDiabetesOutputSchema,
+    schema: PredictDiabetesOutputSchema, // Use the internal schema definition
   },
   prompt: `Act as an expert medical AI specializing in diabetes risk assessment.
   Analyze the following patient data to predict the probability of a positive diabetes diagnosis.
