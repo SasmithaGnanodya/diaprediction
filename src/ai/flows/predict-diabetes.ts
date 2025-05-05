@@ -5,6 +5,7 @@
  * - predictDiabetesProbability - A function that handles the diabetes prediction process.
  * - PredictDiabetesInput - The input type for the predictDiabetesProbability function.
  * - PredictDiabetesOutput - The return type for the predictDiabetesProbability function.
+ * - PredictDiabetesInputSchema - The Zod schema for input validation.
  */
 
 import { ai } from '@/ai/ai-instance';
@@ -12,12 +13,12 @@ import { z } from 'genkit';
 // Keep types from the service file, but the implementation logic is now primarily within the flow.
 import type { PatientData, DiabetesPrediction } from '@/services/diabetes-prediction';
 
-const PredictDiabetesInputSchema = z.object({
-  age: z.number().describe("The patient's age in years."),
-  bloodGroup: z.string().describe("The patient's blood group (e.g., A+, O-)."),
+export const PredictDiabetesInputSchema = z.object({
+  age: z.coerce.number().min(1, { message: "Age must be at least 1." }).max(120, { message: "Age seems unrealistic." }).int("Age must be a whole number.").describe("The patient's age in years."),
+  bloodGroup: z.string().min(1, { message: "Blood group is required." }).describe("The patient's blood group (e.g., A+, O-)."),
   gender: z.string().describe("The patient's gender (Male, Female, or Other)."),
-  weight: z.number().describe("The patient's weight in kilograms."),
-  height: z.number().describe("The patient's height in centimeters."),
+  weight: z.coerce.number().min(1, { message: "Weight must be positive." }).max(500, { message: "Weight seems unrealistic."}).describe("The patient's weight in kilograms."),
+  height: z.coerce.number().min(50, { message: "Height must be at least 50cm." }).max(250, { message: "Height seems unrealistic."}).int("Height must be a whole number (cm).").describe("The patient's height in centimeters."),
 });
 export type PredictDiabetesInput = z.infer<typeof PredictDiabetesInputSchema>;
 
@@ -27,7 +28,7 @@ const PredictDiabetesOutputSchema = z.object({
 });
 export type PredictDiabetesOutput = z.infer<typeof PredictDiabetesOutputSchema>;
 
-// This is the main function the UI will call
+// This is the main function the UI will call (and now the API route)
 export async function predictDiabetesProbability(
   input: PredictDiabetesInput
 ): Promise<PredictDiabetesOutput> {
@@ -63,7 +64,7 @@ const predictDiabetesPrompt = ai.definePrompt({
   - Consider gender nuances if relevant medical literature suggests. Blood group is less directly correlated but include it in context.
 
   Output:
-  Return a JSON object containing:
+  Return ONLY a valid JSON object containing:
   1.  'probability': A numerical value between 0.0 and 1.0 representing the likelihood of diabetes.
   2.  'confidence': A string indicating your confidence in the prediction ('High', 'Medium', or 'Low'). Base confidence on how strongly the input factors point towards or against diabetes according to general medical knowledge. For example, very high BMI and advanced age might warrant 'High' confidence for a high probability. Normal BMI and young age might warrant 'High' confidence for a low probability. Ambiguous cases get 'Medium' or 'Low'.
 
