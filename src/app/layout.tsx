@@ -29,8 +29,6 @@ export default function RootLayout({
         </main>
          <footer className="mt-auto py-6 text-center text-sm text-muted-foreground bg-background border-t"> {/* Footer sticks to bottom */}
           © {new Date().getFullYear()} DiaPredict. All rights reserved. | Disclaimer: For informational purposes only.
-          <br />
-          Built with Firebase Studio & Genkit AI.
       </footer>
         <Toaster /> {/* Add Toaster for notifications */}
       </body>
