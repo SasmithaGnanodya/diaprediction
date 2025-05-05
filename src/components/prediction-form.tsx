@@ -48,11 +48,11 @@ export function PredictionForm({ onSubmit, isLoading }: PredictionFormProps) {
   const form = useForm<PredictionFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      age: undefined,
+      age: '', // Initialize with empty string
       bloodGroup: "",
       gender: undefined,
-      weight: undefined,
-      height: undefined,
+      weight: '', // Initialize with empty string
+      height: '', // Initialize with empty string
     },
   });
 
