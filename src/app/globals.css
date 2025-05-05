@@ -8,14 +8,14 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* White */
-    --foreground: 0 0% 3.9%; /* Dark Gray */
+    --background: 0 0% 98%; /* Very Light Gray - Changed from White */
+    --foreground: 0 0% 3.9%; /* Dark Gray - Keep */
     --card: 0 0% 100%; /* White */
-    --card-foreground: 0 0% 3.9%; /* Dark Gray */
+    --card-foreground: 0 0% 3.9%; /* Dark Gray - Keep */
     --popover: 0 0% 100%; /* White */
-    --popover-foreground: 0 0% 3.9%; /* Dark Gray */
+    --popover-foreground: 0 0% 3.9%; /* Dark Gray - Keep */
     --primary: 180 100% 25%; /* Teal (#008080) */
-    --primary-foreground: 0 0% 100%; /* White */
+    --primary-foreground: 0 0% 98%; /* Slightly off-white for better contrast sometimes */
     --secondary: 0 0% 95%; /* Light Gray (#F2F2F2) */
     --secondary-foreground: 0 0% 9%; /* Dark Gray */
     --muted: 0 0% 95%; /* Light Gray (#F2F2F2) */
@@ -44,16 +44,16 @@ body {
   }
   .dark {
     /* Adding basic dark mode based on the light theme */
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --background: 0 0% 5%; /* Slightly off-black */
+    --foreground: 0 0% 98%; /* Off-white */
+    --card: 0 0% 8%; /* Darker card background */
+    --card-foreground: 0 0% 98%; /* Off-white */
+    --popover: 0 0% 8%; /* Darker popover */
+    --popover-foreground: 0 0% 98%; /* Off-white */
     --primary: 180 100% 35%; /* Slightly lighter Teal for dark mode */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 0 0% 12%; /* Darker secondary */
+    --secondary-foreground: 0 0% 98%; /* Off-white */
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
     --accent: 180 40% 15%; /* Darker Teal Accent */
@@ -84,6 +84,6 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-secondary text-foreground; /* Use secondary as main background */
+    @apply bg-background text-foreground; /* Use main background */
   }
 }
