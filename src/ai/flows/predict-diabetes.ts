@@ -86,9 +86,10 @@ const predictDiabetesFlow = ai.defineFlow<
   outputSchema: PredictDiabetesOutputSchema,
 },
 async input => {
-  // Call the AI model with the defined prompt and input data
-  const result = await predictDiabetesPrompt.generate({input});
+  // Call the AI model with the defined prompt and input data (Genkit v1.x style)
+  const result = await predictDiabetesPrompt(input);
 
-  // Return the structured output from the AI
-  return result.output();
+  // Return the structured output from the AI (Genkit v1.x style)
+  // Use output! as we expect the defined output schema to be adhered to.
+  return result.output!;
 });
